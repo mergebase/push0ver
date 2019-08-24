@@ -1,0 +1,52 @@
+<atlassian-plugin key="push0ver.push0ver" name="push0ver" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">icon.png</param>
+        <param name="plugin-logo">icon.png</param>
+        <param name="configure.url">/plugins/servlet/pushover/admin</param>
+        <param name="atlassian-data-center-compatible">true</param>
+    </plugin-info>
+
+    <servlet key="admin-servlet" class="com.mergebase.push0ver.post.AdminServlet" name="Push0verAdminServlet">
+      <url-pattern>/pushover/admin</url-pattern>
+    </servlet>
+
+    <rest key="rest" path="/pushover-admin" version="1.0">
+      <description>Provides REST resources for the admin UI.</description>
+    </rest>
+
+    <web-item key="bamboo-menu-item" name="Push0ver Global Config" section="system.admin/plugins" weight="10" application="bamboo">
+      <description>Link to pushover-admin page.</description>
+      <label key="Push0ver Global Config" />
+      <link linkId="pushover-admin-link">/plugins/servlet/pushover/admin</link>
+    </web-item>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="push0ver"/>
+
+    <!-- add our web resources -->
+    <web-resource name="Admin Web Resources" key="resources">
+      <dependency>com.atlassian.auiplugin:ajs</dependency>
+      <resource type="download" name="admin.js" location="admin.js"/>
+    </web-resource>
+
+    <taskType key="postTask" name="Push0ver - 2. Push to Artifactory" class="com.mergebase.push0ver.post.PostTask">
+        <description>Plugin for pushing your Bamboo build to Artifactory</description>
+        <category name="builder"/>
+        <configuration class="com.mergebase.push0ver.post.PostConfig"/>
+        <resource type="freemarker" name="edit" location="editPostTask.ftl"/>
+        <resource type="freemarker" name="view" location="viewPostTask.ftl"/>
+        <resource type="download" name="icon" location="icon.png"/>
+    </taskType>
+
+    <taskType key="preTask" name="Push0ver - 1. Extract Git Tag" class="com.mergebase.push0ver.pre.PreTask">
+        <description>Change version number of Pom.xml files to that of the latest Git Tag</description>
+        <category name="builder"/>
+        <configuration class="com.mergebase.push0ver.pre.PreConfig"/>
+        <resource type="freemarker" name="edit" location="editPreTask.ftl"/>
+        <resource type="freemarker" name="view" location="viewPreTask.ftl"/>
+        <resource type="download" name="icon" location="iconpre.png"/>
+    </taskType>
+</atlassian-plugin>
